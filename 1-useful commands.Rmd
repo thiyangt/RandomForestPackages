@@ -62,6 +62,7 @@ varImpPlot(iris_rf)
 
 ```{r}
 irisPred<-predict(iris_rf,newdata=testData)
+irisPred
 table(irisPred, testData$Species)
 
 ```
@@ -75,10 +76,35 @@ plot(margin(iris_rf,testData$Species))
 
 7. Tune randomForest for the optimal mtry parameter
 
+method 1
+
 ```{r}
 tune.rf <- tuneRF(iris[,-5],iris[,5], stepFactor=0.5)
 print(tune.rf)
 
+```
+
+method 2
+
+We can also tune the structure, ie, finding the best hyperparameters of the method via grid search
+
+```{r}
+library(e1071)
+tuned.r <- tune(randomForest, train.x=Species~., data=trainData, validation.x=testData)
+best.model <- tuned.r$best.model
+best.model
+predictions <- predict(best.model, testData)
+table.random.forest <- table(testData$Species, predictions)
+table.random.forest
+```
+
+
+
+
+8. Tree size
+
+```{r}
+hist(treesize(iris_rf))
 ```
 
 # The randomForestSRC Package
@@ -91,7 +117,17 @@ library(randomForestSRC)
 
 ```{r}
 ## Edgar Anderson's iris data
-# iris.obj <- rfsrc(Species ~., data = trainData)
+iris.obj <- rfsrc(Species ~., data = trainData)
+iris.obj
+plot(iris.obj)
+
+```
+
+2. predict based on the results of rfsrc
+
+```{r}
+
+predict(iris.obj, testData)
 ```
 
 ## Parallel execution with random forest
@@ -115,5 +151,7 @@ rf <- foreach(n=rep(ceiling(ntree/workers), workers),
 }
 
 ```
+
+
 
 
