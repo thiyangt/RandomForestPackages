@@ -1,0 +1,82 @@
+---
+title: "Different Random Forest Packages in R"
+author: "Thiyanga Talagala"
+date: "14 November 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(knitr)
+opts_chunk$set(tidy = TRUE)
+```
+
+# randomForest Package
+
+## Data pre-processing
+
+### Split iris data to Training data and testing data
+
+```{r}
+ind <- sample(2,nrow(iris),replace=TRUE,prob=c(0.7,0.3))
+trainData <- iris[ind==1,]
+testData <- iris[ind==2,]
+
+```
+
+1. Load randomForest
+
+```{r}
+library(randomForest)
+
+```
+
+2. Generate Random Forest learning treee
+
+```{r}
+iris_rf <- randomForest(Species~.,data=trainData,ntree=100,proximity=TRUE)
+table(predict(iris_rf),trainData$Species)
+
+```
+
+3. Try to print Random Forest model and see the importance features
+
+```{r}
+print(iris_rf)
+
+plot(iris_rf)
+```
+
+4. Assessing model fit
+
+```{r}
+importance(iris_rf)
+varImpPlot(iris_rf)
+
+```
+
+5. Predict the class labels for test data
+
+```{r}
+irisPred<-predict(iris_rf,newdata=testData)
+table(irisPred, testData$Species)
+
+```
+
+6. Try to see the margin, positive or negative, if positif it means correct classification
+
+```{r}
+plot(margin(iris_rf,testData$Species))
+
+```
+
+7. Tune randomForest for the optimal mtry parameter
+
+```{r}
+tune.rf <- tuneRF(iris[,-5],iris[,5], stepFactor=0.5)
+print(tune.rf)
+
+```
