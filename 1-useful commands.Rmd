@@ -121,14 +121,35 @@ iris.obj <- rfsrc(Species ~., data = trainData)
 iris.obj
 plot(iris.obj)
 
+# obtain class labels
+
+
 ```
 
 2. predict based on the results of rfsrc
 
 ```{r}
 
-predict(iris.obj, testData)
+rfsrcpred <- predict(iris.obj, testData)
+
+predictions<- rfsrcpred$predicted
+predictions
+
+
 ```
+
+3. Plotting commands
+
+```{r}
+
+data(iris.obj, package="ggRandomForests")
+gg_dta<- gg_rfsrc(iris.obj)
+
+plot(gg_dta)
+```
+
+
+
 
 ## Parallel execution with random forest
 
