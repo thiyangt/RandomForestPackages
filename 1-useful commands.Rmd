@@ -119,6 +119,7 @@ library(randomForestSRC)
 ## Edgar Anderson's iris data
 iris.obj <- rfsrc(Species ~., data = trainData)
 iris.obj
+summary(iris.obj)
 plot(iris.obj)
 
 # obtain class labels
@@ -135,17 +136,28 @@ rfsrcpred <- predict(iris.obj, testData)
 predictions<- rfsrcpred$predicted
 predictions
 
+maxid<-function(arr){ # to select the maximum probability
+  return(which(arr==max(arr)))
+}
 
+Labels <- colnames(predictions)
+idx<-apply(predictions,c(1),maxid)
+idx # this gives the column id corresponds to the maximum probability in the predictions dataframe
+
+prediction.label<-Labels[idx]
+prediction.label
+table(prediction.label)
 ```
 
 3. Plotting commands
 
 ```{r}
-
+library("ggRandomForests")
 data(iris.obj, package="ggRandomForests")
 gg_dta<- gg_rfsrc(iris.obj)
 
 plot(gg_dta)
+plot(iris.obj)
 ```
 
 
